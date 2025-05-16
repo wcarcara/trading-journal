@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title data-translate="Trading Journal">Trading Journal</title>
+  <link rel="stylesheet" href="popup.css" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700&display=swap">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+<header class="app-header">
+<div class="page-title" id="pageTitle" data-translate="Diário de Trading">Diário de Trading</div>
+<div class="header-actions">
+  <!-- Seja um Apoiador -->
+  <button id="apoiadorBtn" class="header-action-btn" title="Seja um apoiador" data-translate="Seja um apoiador">
+    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12.001 20.159l-.177-.157C7.176 16.067 3 12.31 3 8.498 3 5.419 5.514 3 8.442 3c1.653 0 3.18.835 4.059 2.133C13.38 3.835 14.906 3 16.56 3 19.488 3 22 5.419 22 8.498c0 3.812-4.178 7.568-8.824 11.504l-.175.157z"/></svg>
+    <span data-translate="Seja um apoiador">Seja um Apoiador</span>
+  </button>
+  <button id="settingsBtn" class="header-action-btn" title="Ajustes" data-translate="Ajustes">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+      <circle cx="12" cy="12" r="3" stroke-width="2"/>
+      <path d="M20.2 13.5l-1.3-.7c0-.3.1-.5.1-.8s0-.5-.1-.8l1.3-.7c.3-.2.4-.6.2-1l-1-1.7c-.2-.3-.6-.4-1-.2l-1.3.7c-.5-.4-.9-.7-1.5-.9V6c0-.4-.3-.7-.7-.7h-2c-.4 0-.7.3-.7.7v1.4c-.6.2-1.1.5-1.5.9L9.5 7.6c-.3-.2-.8-.1-1 .2l-1 1.7c-.2.3-.1.8.2 1l1.3.7c0 .3-.1.5-.1.8 0 .3 0 .5.1.8l-1.3.7c-.3.2-.4.6-.2 1l1 1.7c.2.3.6.4 1 .2l1.3-.7c.5.4.9.7 1.5.9V18c0 .4.3.7.7.7h2c.4 0 .7-.3.7-.7v-1.4c.6-.2 1.1-.5 1.5-.9l1.3.7c.3.2.8.1 1-.2l1-1.7c.1-.3 0-.7-.3-1z" stroke-width="1.7"/>
+    </svg>
+    <span data-translate="Ajustes">Ajustes</span>
+  </button>
+  <button id="sobreBtn" class="header-action-btn" title="Sobre" data-translate="Sobre">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" fill="none"/>
+      <rect x="11" y="10" width="2" height="7" rx="1" fill="currentColor"/>
+      <rect x="11" y="7" width="2" height="2" rx="1" fill="currentColor"/>
+    </svg>
+    <span data-translate="Sobre">Sobre</span>
+  </button>
+</div>
+</header>
+
+<div class="excel-tabs-bar">
+    <button class="excel-tab active" data-tab="journal" data-translate="Diário de Trading"><span data-translate="Diário de Trading">Diário de Trading</span></button>
+    <button class="excel-tab" data-tab="heatmap" data-translate="Heatmap"><span data-translate="Heatmap">Heatmap</span></button>
+    <button class="excel-tab" data-tab="performance" data-translate="Relatórios de Performance"><span data-translate="Relatórios de Performance">Relatórios de Performance</span></button>
+  </div>
+  
+  <div class="excel-tabs-container">
+    <!-- Aba 1: Trading Journal -->
+    <div class="excel-tab-content" id="tab-journal" style="display:block;">   
+        <div class="trade-table card">
+          <div class="card-header">
+            <h3 data-translate="Entradas de Trade">Entradas de Trade</h3>
+            <div class="table-actions">
+              <button id="openAddTradeModalBtn" class="btn-primary btn-add-trade" title="Adicionar Trade" data-translate="Adicionar Trade" style="margin-right: 10px; display: flex; align-items:center; gap:7px;">
+              <svg width="20" height="20" fill="none" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <span data-translate="Adicionar Trade">Adicionar Trade</span>
+            </button>
+              <div class="month-selector">
+                <button id="prevMonthBtn" class="month-nav-btn" data-translate="Anterior">◄</button>
+                <span id="currentMonthYear"></span>
+                <button id="nextMonthBtn" class="month-nav-btn" data-translate="Próximo">►</button>
+              </div>
+              <button id="monthlyReportBtn" class="btn-secondary btn-monthly-report" title="Relatório mensal" data-translate="Relatório mensal">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><rect x="3" y="4" width="18" height="16" rx="3" stroke="#1ca8e7" stroke-width="2"/><path d="M8 2v4M16 2v4M3 10h18" stroke="#1ca8e7" stroke-width="2" stroke-linecap="round"/></svg>
+                <span data-translate="Relatório mensal">Relatório mensal</span>
+              </button>
+              <button id="exportCsvBtn" class="btn-secondary" data-translate="Exportar CSV">Exportar CSV</button>
+            </div>
+          </div>
+          <div class="trade-table-wrapper">
+            <table id="tradeTable">
+              <thead>
+                <tr>
+                  <th data-translate="Data/Hora">Data/Hora</th><th data-translate="Ativo">Ativo</th><th data-translate="Preço de Entrada">Preço de Entrada</th>
+                  <th data-translate="Take Profit">Take Profit</th><th data-translate="Stop Loss">Stop Loss</th>
+                  <th data-translate="Risco (%)">Risco (%)</th><th data-translate="Comissão">Comissão</th><th data-translate="Tamanho da Posição">Tamanho da Posição</th>
+                  <th data-translate="Comentário do Trade">Comentário do Trade</th><th data-translate="Lucro">Lucro</th><th data-translate="Ações">Ações</th>
+                </tr>
+              </thead>
+              <tbody id="tradeTableBody"></tbody>
+            </table>
+<!-- ---MODAL ADD TRADE--- -->
+<div class="modal" id="addTradeModal">
+  <div class="modal-content add-trade-modal-content add-trade-modal-grid">
+    <div class="modal-header">
+      <span data-translate="Adicionar nova operação">Adicionar nova operação</span>
+      <span class="close" id="closeAddTradeModal" data-translate="Fechar">&times;</span>
+    </div>
+    <form id="tradeFormModal">
+      <div class="modal-grid">
+        <div class="form-group">
+          <label for="accountBalanceModal" data-translate="Saldo da Conta">Saldo da Conta</label>
+          <div class="input-adorned">
+            <span class="input-addon currency" data-translate="R$">$</span>
+            <input type="number" id="accountBalanceModal" name="accountBalance" class="form-control" step="any" required placeholder="0,00" data-translate="0,00"/>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="assetModal" data-translate="Ativo">Ativo</label>
+          <div class="input-adorned">
+            <span class="input-addon currency">-</span>
+            <div class="custom-asset-selector" id="assetSelectorModal">
+              <div class="asset-selected" id="selectedAssetJournalModal" tabindex="0">
+                <img class="asset-icon-mini" src="assets/btc.svg" width="20" /> BTCUSD
+                <span class="asset-dropdown-arrow">▼</span>
+              </div>
+              <div class="asset-options" id="assetOptionsModal" style="display:none;"></div>
+            </div>
+            <input type="hidden" id="assetModal" name="asset" required>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="entryPriceModal" data-translate="Preço de Entrada">Preço de Entrada</label>
+          <div class="input-adorned">
+            <span class="input-addon currency" data-translate="R$">$</span>
+            <input type="number" id="entryPriceModal" name="entryPrice" class="form-control" step="any" required placeholder="0,00" data-translate="0,00"/>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="takeProfitModal" data-translate="Take Profit (TP)">Take Profit (TP)</label>
+          <div class="input-adorned">
+            <span class="input-addon currency" data-translate="R$">$</span>
+            <input type="number" id="takeProfitModal" name="takeProfit" class="form-control" step="any" required placeholder="0,00" data-translate="0,00"/>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="stopLossModal" data-translate="Stop Loss">Stop Loss</label>
+          <div class="input-adorned">
+            <span class="input-addon currency" data-translate="R$">$</span>
+            <input type="number" id="stopLossModal" name="stopLoss" class="form-control" step="any" required placeholder="0,00" data-translate="0,00"/>
+            <div class="stoppado-checkbox">
+              <input type="checkbox" id="wasStoppedOutModal" name="wasStoppedOut">
+              <label for="wasStoppedOutModal" data-translate="Stop">Stop</label>
+            </div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="riskPercentageModal" data-translate="Risco (%)">Risco (%)</label>
+          <div class="input-adorned">
+            <span class="input-addon currency" data-translate="%">%</span>
+            <input type="number" id="riskPercentageModal" name="riskPercentage" class="form-control" step="0.01" min="0" max="100" required placeholder="0,00" data-translate="0,00"/>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="commissionModal" data-translate="Comissão (%)">Comissão (%)</label>
+          <div class="input-adorned">
+            <span class="input-addon currency" data-translate="%">%</span>
+            <input type="number" id="commissionModal" name="commission" class="form-control" step="0.01" min="0" value="0" required placeholder="0,00" data-translate="0,00"/>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="positionSizeModal" data-translate="Tamanho da Posição">Tamanho da Posição</label>
+          <div class="input-adorned">
+            <span class="input-addon currency" data-translate="%">%</span>
+            <input type="number" id="positionSizeModal" name="positionSize" class="form-control" step="any" readonly placeholder="0,00" data-translate="0,00"/>
+          </div>
+        </div>
+      </div>
+      <div class="form-group" style="margin-top:4px;">
+        <label for="tradeCommentModal" data-translate="Comentário do Trade">Comentário do Trade</label>
+        <textarea id="tradeCommentModal" name="tradeComment" class="form-control" placeholder="Observações..." data-translate="Observações..."></textarea>
+      </div>
+      <div class="form-group">
+        <label for="tradeDateTimeModal" data-translate="Data e Hora">Data e Hora</label>
+        <input type="datetime-local" id="tradeDateTimeModal" name="tradeDateTime" class="form-control" required />
+      </div>
+      <button type="submit" id="addTradeBtnModal" class="btn-primary" style="width:100%;margin-top:8px;" data-translate="Adicionar Trade">Adicionar Trade</button>
+    </form>
+  </div>
+</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Aba 2: Heatmap -->
+    <div class="excel-tab-content" id="tab-heatmap" style="display:none;">
+      <div class="journal-extras-flex">
+        <div class="heatmap-container">
+          <div class="heatmap-header">
+            <h3 class="heatmap-title" data-translate="Heatmap de Operações">Heatmap de Operações</h3>
+            <div class="heatmap-filter">
+              <select id="heatmap-type">
+                <option value="day_hour" data-translate="Dia/Hora">Dia/Hora</option>
+                <option value="weekday" data-translate="Dia da Semana">Dia da Semana</option>
+                <option value="asset" data-translate="Ativo">Ativo</option>
+              </select>
+            </div>
+          </div>
+          <div id="heatmap-content"></div>
+          <div class="heatmap-legend">
+            <div class="legend-item">
+              <div class="legend-color" style="background-color: rgba(1,181,116,0.7); border:1px solid #00984A"></div>
+              <span style="color:#08cf72;font-weight:600;" data-translate="Win%">Win%</span>
+            </div>
+            <div class="legend-item">
+              <div class="legend-color" style="background-color: rgba(234,6,6,0.7); border:1px solid #CC2222"></div>
+              <span style="color:#ff6060;font-weight:600;" data-translate="Loss%">Loss%</span>
+            </div>
+          </div>
+        </div>
+        <div class="ai-insights-container">
+          <div class="ai-insights-header">
+            <h3 class="ai-insights-title" data-translate="Insights de IA">Insights de IA</h3>
+            <button id="generate-insights-btn" class="generate-insights-btn" data-translate="Gerar Insights">Gerar Insights</button>
+          </div>
+          <div id="ai-insights-content" class="ai-insights-content">
+            <!-- Conteúdo preenchido via JS -->
+          </div>
+        </div>
+      </div>
+    </div>
+  
+    <!-- Aba 3: Performance Reports -->
+    <div class="excel-tab-content" id="tab-performance" style="display:none;">
+      <div class="journal-stats card">
+        <div class="card-header"><h3 data-translate="Estatísticas do Diário">Estatísticas do Diário</h3></div>
+        <div class="stats-grid">
+            <div class="stat-item"><div class="stat-label" data-translate="Win Rate">Win Rate</div><div class="stat-value positive" id="statWinRate">0%</div></div>
+            <div class="stat-item"><div class="stat-label" data-translate="Profit Factor">Profit Factor</div><div class="stat-value positive" id="statProfitFactor">0</div></div>
+            <div class="stat-item"><div class="stat-label" data-translate="Total de Trades">Total de Trades</div><div class="stat-value" id="statTotalTrades">0</div></div>
+            <div class="stat-item"><div class="stat-label" data-translate="Avg. Trade">Avg. Trade</div><div class="stat-value positive" id="statAvgTrade">0%</div></div>
+          </div>
+      </div>
+      <div class="performance-reports-container">
+        <div class="card performance-header-card">
+          <div class="card-header"><h3 data-translate="Relatórios de Performance">Relatórios de Performance</h3></div>
+        </div>
+        <div class="performance-grid">
+          <div class="report-section card">
+            <div class="card-header"><h3 data-translate="Semanal">Semanal</h3></div>
+            <div class="report-chart-container">
+              <canvas id="weeklyChart" height="180"></canvas>
+              <div id="weeklyDetailedStats" class="performance-stats"></div>
+            </div>
+          </div>
+          <div class="report-section card">
+            <div class="card-header"><h3 data-translate="Mensal">Mensal</h3></div>
+            <div class="report-chart-container">
+              <canvas id="monthlyChart" height="180"></canvas>
+              <div id="monthlyDetailedStats" class="performance-stats"></div>
+            </div>
+          </div>
+          <div class="report-section card">
+            <div class="card-header"><h3 data-translate="Anual">Anual</h3></div>
+            <div class="report-chart-container">
+              <canvas id="yearlyChart" height="180"></canvas>
+              <div id="yearlyDetailedStats" class="performance-stats"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Modal do Calendário Mensal -->
+  <div class="modal" id="monthlyReportModal">
+    <div class="modal-content monthly-calendar-modal-content">
+      <div class="modal-header">
+        <span id="monthlyCalendarTitle" data-translate="Relatório mensal">Relatório mensal</span>
+        <span class="close" id="closeMonthlyReportModal" data-translate="Fechar">&times;</span>
+      </div>
+      <div id="calendarGrid"></div>
+    </div>
+  </div>
+
+  <!-- Modal Seja um Apoiador -->
+  <div class="modal" id="apoiadorModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <span data-translate="Seja um Apoiador">Seja um Apoiador!</span>
+      </div>
+      <div class="apoiador-msg" data-translate="Este é um projeto 100% gratuito! Se ele está ajudando você, considere apoiar nosso trabalho. Sua doação incentiva o desenvolvimento contínuo de ferramentas livres e com foco na comunidade. Muito obrigado por apoiar tecnologia aberta! 🙏">
+        Este é um projeto 100% gratuito!<br>
+        Se ele está ajudando você, considere apoiar nosso trabalho.<br>
+        Sua doação incentiva o desenvolvimento contínuo de ferramentas livres e com foco na comunidade.<br>
+        <b>Muito obrigado por apoiar tecnologia aberta! 🙏</b>
+      </div>
+      <div class="apoiador-qrcode-area">
+        <img src="assets/qrcode-walletofsatoshi.png" width="155" alt="Apoie via wallet of satoshi">
+      </div>
+      <span>saintlyspruce68@walletofsatoshi.com</span>
+      <div class="apoiador-rodape" data-translate="Ou ajude doando através da rede On-Chain:">
+        Este projeto roda a base de café: <br> <script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="wcarcaradev" data-color="#FFDD00" data-emoji=""  data-font="Cookie" data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#000000" data-coffee-color="#ffffff" ></script>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Settings -->
+  <div class="modal" id="settingsModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <span><h3 data-translate="Ajustes">Ajustes</h3></span>
+      </div>
+      <div class="settings-group">
+        <label data-translate="Idioma:">Idioma:</label>
+        <div class="switch-container">
+          <span>EN</span>
+          <label class="switch"><input type="checkbox" id="languageSwitch"><span class="slider"></span></label>
+          <span>PT</span>
+        </div>
+      </div>
+      <div class="settings-group">
+        <label data-translate="Tema:">Tema:</label>
+        <div class="switch-container">
+          <span data-translate="Escuro">Escuro</span>
+          <label class="switch"><input type="checkbox" id="themeSwitch"><span class="slider"></span></label>
+          <span data-translate="Claro">Claro</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Sobre -->
+  <div class="modal" id="sobreModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <span data-translate="Privacidade & Sobre">Privacidade & Sobre</span>
+      </div>
+      <div class="sobre-msg">
+        <b data-translate="Privacidade Total:">Privacidade Total:</b><br>
+        <span data-translate="Nenhum dado do seu diário de trades é enviado para servidores externos.">Nenhum dado do seu diário de trades é enviado para servidores externos.</span><br>
+        <ul>
+          <li data-translate="Seus dados ficam somente no seu navegador (IndexedDB).">Seus dados ficam somente no seu navegador (IndexedDB).</li>
+          <li data-translate="Não exigimos cadastro nem autenticação.">Não exigimos cadastro nem autenticação.</li>
+          <li data-translate="Nem eu, desenvolvedor, posso acessar suas informações!">Nem eu, desenvolvedor, posso acessar suas informações!</li>
+          <li data-translate="Ferramenta 100% local e independente.">Ferramenta 100% local e independente.</li>
+        </ul>
+        <span data-translate="Use com liberdade e confiança. Vamos juntos fortalecer a comunidade trader com ferramentas privadas e gratuitas!">
+          Use com liberdade e confiança. Vamos juntos fortalecer a comunidade trader com ferramentas privadas e gratuitas!
+        </span>
+        <hr style="margin:15px 0;">
+      <div style="margin-top:8px; text-align: center;">
+        <h5><span data-translate="Contato:">Dúvidas e/ou Sugestões?</span>
+        <a href="#" id="emailContato" class="email-link" style="color:#298ae4;text-decoration:underline;cursor:pointer;">Fale Conosco.</a></h5>
+      </div>
+      </div>
+    </div>
+  </div>
+  
+  <script src="trading-journal-ai.js"></script>
+  <script src="popup.js"></script>
+</body>
+</html>
