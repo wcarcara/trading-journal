@@ -11,7 +11,6 @@ const ASSETS = [
   { symbol: "UKOIL", icon: "assets/oiluk.png", label: "UKOIL" }
 ];
 
-// Montar menu de assets no DOMContentLoaded
 function setupAssetSelector(initialValue="BTCUSD") {
   const assetOptionsContainer = document.getElementById('assetOptions');
   const selectedDiv = document.getElementById('selectedAssetJournal');
@@ -53,7 +52,7 @@ function setupAssetSelector(initialValue="BTCUSD") {
   // Escape on focus out
   selectedDiv.addEventListener('blur',()=>{assetOptionsContainer.style.display='none'; selectedDiv.classList.remove('open');});
 }
-// Call after DOMContentLoaded
+
 document.addEventListener('DOMContentLoaded',()=>setupAssetSelector());
 
 function attachCalculatorMaskMoney(input) {
@@ -280,8 +279,6 @@ class TradingJournalApp {
     this.updateMonthYearDisplay();
     this.updateTradeTable();
     this.updateJournalStatistics();
-    this.initPerformanceCharts();
-    this.updatePerformanceReports();
 
     this.setupEventListeners();
     this.setupTradingJournal();
@@ -796,6 +793,14 @@ changeMonth(delta) {
 
   initPerformanceCharts() {
     // Chart.js setup
+    const weekly = document.getElementById('weeklyChart');
+  const monthly = document.getElementById('monthlyChart');
+  const yearly = document.getElementById('yearlyChart');
+  if (!(window.Chart && weekly && monthly && yearly)) {
+    console.error('Chart.js ou elementos dos gráficos não encontrados.');
+    return;
+  }
+  
     const chartOptions = {
       responsive: true,
       maintainAspectRatio: false,
@@ -892,11 +897,12 @@ changeMonth(delta) {
 }
 
  updatePerformanceReports() {
+  if (!this.weeklyChart || !this.monthlyChart || !this.yearlyChart) return; // <-- só atualiza se já existem!
+
   const weeklyData = this.getPerformanceData('week');
   const monthlyData = this.getPerformanceData('month');
   const yearlyData = this.getPerformanceData('year');
 
-  // Atualiza gráficos de pizza para mostrar Profit/Loss ao invés de trades ganhos/perdidos
   this.weeklyChart.data.datasets[0].data = [weeklyData.profit, weeklyData.loss];
   this.weeklyChart.update();
   this.updatePerformanceStats('weekly', weeklyData.trades, weeklyData.wins, weeklyData.losses, weeklyData.pnl, weeklyData.pnlPercentage);
@@ -1119,16 +1125,70 @@ function renderMonthlyPnLCalendar() {
   }
 }
 
-// ...adicione ao final...
+let chartsInitialized = false;
+
+function showPerformanceTabAndCharts() {
+  if (window.tradingJournalApp.weeklyChart) window.tradingJournalApp.weeklyChart.destroy();
+  if (window.tradingJournalApp.monthlyChart) window.tradingJournalApp.monthlyChart.destroy();
+  if (window.tradingJournalApp.yearlyChart) window.tradingJournalApp.yearlyChart.destroy();
+
+  window.tradingJournalApp.initPerformanceCharts();
+  window.tradingJournalApp.updatePerformanceReports();
+}
+
+document.addEventListener('DOMContentLoaded', function () {
+  // Excel-style tabs logic (substitua pelo bloco abaixo)
+  const tabButtons = document.querySelectorAll('.excel-tab');
+  const tabContents = document.querySelectorAll('.excel-tab-content');
+
+  tabButtons.forEach(function(tab) {
+    tab.addEventListener('click', function() {
+      // Remove .active de todas as abas e esconde conteúdos
+      tabButtons.forEach(t => t.classList.remove('active'));
+      tabContents.forEach(c => c.style.display = "none");
+
+      // Ativa a aba clicada e mostra o conteúdo correspondente
+      tab.classList.add('active');
+      const targetId = "tab-" + tab.getAttribute('data-tab');
+      const content = document.getElementById(targetId);
+      if(content) content.style.display = "block";
+
+      // Se foi para a aba de performance, (re)inicializa os gráficos
+      if (tab.dataset.tab === 'performance') {
+        showPerformanceTabAndCharts();
+      }
+    });
+  });
+
+  // Opcionalmente, inicializa se a aba performance já estiver ativa no load
+  if (document.querySelector('.excel-tab.active')?.dataset.tab === 'performance') {
+    showPerformanceTabAndCharts();
+  }
+});
 
 document.addEventListener('DOMContentLoaded', function () {
   const emailEl = document.getElementById('emailContato');
   if(emailEl) {
     emailEl.addEventListener('click', function(e) {
       e.preventDefault();
-      // Altera o email abaixo para o seu real
       const email = "wcarcaradev@protonmail.com";
       window.open(`mailto:${email}`,"_blank"); // Abre o email padrão do usuário
+    });
+  }
+});
+
+document.addEventListener('DOMContentLoaded', function () {
+  const theme = localStorage.getItem('theme') || 'dark';
+  document.body.classList.toggle('light-theme', theme === 'light');
+  
+  // Atualiza o estado visual do switch (se existe)
+  const themeSwitch = document.getElementById('themeSwitch');
+  if (themeSwitch) {
+    themeSwitch.checked = theme === 'light';
+    themeSwitch.addEventListener('change', function(e) {
+      const isLight = e.target.checked;
+      localStorage.setItem('theme', isLight ? 'light' : 'dark');
+      document.body.classList.toggle('light-theme', isLight);
     });
   }
 });

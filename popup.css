@@ -1759,6 +1759,7 @@ td.stopped-cell { color:var(--danger); font-weight: bold; position: relative;}
   background: var(--bg-glass, #192053);
   border-radius: 8px;
   min-height: 54px;
+  min-width: 40px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -1850,7 +1851,7 @@ body.light-theme {
 }
 
 body, .excel-tab-content, .card, .modal-content {
-  font-size: 13px !important;
+  font-size: 12px !important;
 }
 .stats-grid, .performance-grid, .journal-stats, .performance-stats, .report-section, .card-header, .table-actions, .trading-journal-container {
   gap: .3rem !important;
@@ -1874,7 +1875,7 @@ body, .excel-tab-content, .card, .modal-content {
   gap: 8px !important;
 }
 .header-action-btn, .btn-primary, .btn-secondary, .btn-monthly-report, .action-btn.delete {
-  font-size: 0.86rem !important;
+  font-size: 0.76rem !important;
   padding: 5px 10px !important;
   border-radius: 6px !important;
   min-height: 22px;
@@ -2235,10 +2236,10 @@ body.light-theme .header-action-btn#settingsBtn {
   justify-content: center;
   align-items: center;
   margin: 14px 0;
-  padding: 20px 0 8px 0;
+  padding: 10px 0 8px 0;
 }
 #apoiadorModal .apoiador-qrcode-area img {
-  width: 220px;
+  width: 180px;
   border-radius: 8px;
   background: #fff;
   border: 1px solid #e2e2ef;
@@ -2305,11 +2306,11 @@ body.light-theme #sobreModal .modal-header { color: #1799f8 !important; }
   background: var(--bg-glass) !important;
   color: var(--primary);
   box-shadow: none;
-  font-weight: 600;
+  font-weight: 500;
   font-size: 1em !important;
   padding: 6px 15px !important;
   height: 31px !important;
-  min-height: 31px;
+  min-height: 21px;
   display: flex;
   align-items: center;
   gap: 8px;
@@ -2385,4 +2386,40 @@ body.light-theme .btn-monthly-report:hover {
 .email-link:hover {
   color: var(--danger, #ea0606);
   text-decoration: underline;
+}
+
+/* Torna toda a extensão (popup) com largura fixa de 800px em todas as abas e evita zoom interno no Chrome */
+
+html, body {
+  min-width: 800px !important;
+  max-width: 800px !important;
+  width: 800px !important;
+  overflow-x: auto !important;
+}
+
+.app-header,
+.excel-tabs-bar,
+.excel-tabs-container,
+.excel-tab-content,
+.journal-extras-flex,
+.trade-table-wrapper{
+  min-width: 800px !important;
+  max-width: 800px !important;
+  width: 800px !important;
+  box-sizing: border-box !important;
+}
+
+/* Para que não ultrapasse a tela, reduza para telas menores apenas se for necessário: */
+@media (max-width: 810px) {
+  html, body,
+  .app-header,
+  .excel-tabs-bar,
+  .excel-tabs-container,
+  .excel-tab-content,
+  .trade-table-wrapper,
+  .journal-extras-flex {
+    min-width: 100vw !important;
+    max-width: 100vw !important;
+    width: 100vw !important;
+  }
 }
