@@ -11,6 +11,15 @@ const ASSETS = [
   { symbol: "UKOIL", icon: "assets/oiluk.png", label: "UKOIL" }
 ];
 
+function escapeHtml(s) {
+  return String(s)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
 function setupAssetSelector(initialValue="BTCUSD") {
   const assetOptionsContainer = document.getElementById('assetOptions');
   const selectedDiv = document.getElementById('selectedAssetJournal');
@@ -588,25 +597,25 @@ class TradingJournalApp {
       const row = document.createElement('tr');
       row.className = stoppedOutClass;
       row.innerHTML = `
-        <td>${formattedTradeDate}</td>
-        <td>${trade.asset}</td>
-        <td>${Number(trade.entryPrice).toFixed(2)}</td>
-        <td>${Number(trade.takeProfit).toFixed(2)}</td>
-        <td class="${stoppedCellClass}">
-          <div class="stop-value-container">
-            ${Number(trade.stopLoss).toFixed(2)}
-            ${trade.wasStoppedOut ? '<span class="stopped-badge">!</span>' : ''}
-          </div>
-        </td>
-        <td>${Number(trade.riskPercentage).toFixed(2)}</td>
-        <td>-$${commission.toFixed(2)}</td>
-        <td>${Number(trade.positionSize).toFixed(2)}</td>
-        <td>${trade.tradeComment || '-'}</td>
-        <td class="${profitClass}">$${profit.toFixed(2)} (${profitPercentage.toFixed(2)}%)</td>
-        <td>
-          <button class="action-btn delete" data-id="${trade.id}" data-translate="Delete">Delete</button>
-        </td>
-      `;
+  <td>${formattedTradeDate}</td>
+  <td>${escapeHtml(trade.asset)}</td>
+  <td>${Number(trade.entryPrice).toFixed(2)}</td>
+  <td>${Number(trade.takeProfit).toFixed(2)}</td>
+  <td class="${stoppedCellClass}">
+    <div class="stop-value-container">
+      ${Number(trade.stopLoss).toFixed(2)}
+      ${trade.wasStoppedOut ? '<span class="stopped-badge">!</span>' : ''}
+    </div>
+  </td>
+  <td>${Number(trade.riskPercentage).toFixed(2)}</td>
+  <td>-$${commission.toFixed(2)}</td>
+  <td>${Number(trade.positionSize).toFixed(2)}</td>
+  <td>${escapeHtml(trade.tradeComment || '-')}</td>
+  <td class="${profitClass}">$${profit.toFixed(2)} (${profitPercentage.toFixed(2)}%)</td>
+  <td>
+    <button class="action-btn delete" data-id="${trade.id}" data-translate="Delete">Delete</button>
+  </td>
+`;
       tradeTableBody.appendChild(row);
     });
   } else {

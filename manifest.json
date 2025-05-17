@@ -11,5 +11,10 @@
     "16": "assets/icon16.png",
     "32": "assets/icon32.png",
     "180": "assets/icon180.png"
+  },
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "trading-journal-pro@wcarcara.dev"
+    }
   }
 }
