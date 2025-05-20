@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Trading Journal PRO",
-  "version": "1.0",
+  "version": "1.0.1",
   "description": "Diário de Trading com IA, Heatmap e Estatísticas.",
   "action": {
     "default_popup": "popup.html"

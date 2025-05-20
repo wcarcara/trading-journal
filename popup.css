@@ -2389,37 +2389,70 @@ body.light-theme .btn-monthly-report:hover {
 }
 
 /* Torna toda a extensão (popup) com largura fixa de 800px em todas as abas e evita zoom interno no Chrome */
-
+/* Resetar todas as regras de tamanho fixo e animações que podem estar causando problemas */
 html, body {
-  min-width: 800px !important;
-  max-width: 800px !important;
-  width: 800px !important;
-  overflow-x: auto !important;
+  width: 800px;
+  min-width: 800px;
+  max-width: 800px;
+  margin: 0;
+  padding: 0;
+  overflow-x: auto;
+  transition: none !important;
+  animation: none !important;
 }
 
-.app-header,
-.excel-tabs-bar,
-.excel-tabs-container,
-.excel-tab-content,
-.journal-extras-flex,
-.trade-table-wrapper{
-  min-width: 800px !important;
-  max-width: 800px !important;
-  width: 800px !important;
-  box-sizing: border-box !important;
+/* Removendo completamente a animação que está causando o problema */
+@keyframes modalIn {
+  from { opacity: 1; }
+  to { opacity: 1; }
 }
 
-/* Para que não ultrapasse a tela, reduza para telas menores apenas se for necessário: */
-@media (max-width: 810px) {
-  html, body,
-  .app-header,
-  .excel-tabs-bar,
-  .excel-tabs-container,
-  .excel-tab-content,
-  .trade-table-wrapper,
-  .journal-extras-flex {
-    min-width: 100vw !important;
-    max-width: 100vw !important;
-    width: 100vw !important;
+/* Firefox específico */
+@-moz-document url-prefix() {
+  body {
+    width: 800px !important;
+    min-width: 800px !important;
+    max-width: 800px !important;
+    
+    /* Forçar renderização imediata */
+    visibility: visible !important;
+    opacity: 1 !important;
+    display: block !important;
+    
+    /* Remover todas animações e transições */
+    animation: none !important;
+    transition: none !important;
   }
+  
+  /* Desativar todas as animações no Firefox */
+  * {
+    animation: none !important;
+    transition: none !important;
+    transform: none !important;
+  }
+  
+  /* Garantir que o modal não tenha efeitos de atraso */
+  .modal, .modal-content {
+    animation: none !important;
+    transition: none !important;
+  }
+  
+  /* Forçar estilo correto para modal em Firefox */
+  .modal[style*="block"] {
+    display: flex !important;
+    opacity: 1 !important;
+  }
+}
+
+/* Modificar a forma como o modal é exibido */
+.modal {
+  display: none;
+  opacity: 1;
+  transition: none;
+  animation: none;
+}
+
+.modal-content {
+  animation: none;
+  transition: none;
 }
